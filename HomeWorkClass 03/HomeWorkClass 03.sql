@@ -1,11 +1,11 @@
 --Calculate the count of all grades per Teacher in the system
 
-SELECT TeacherID, SUM(Grade) as totalGrades FROM Grade
+SELECT TeacherID, COUNT(Grade) as totalGrades FROM Grade
 GROUP BY TeacherID
 
 --Calculate the count of all grades per Teacher in the system for first 100 Students (ID < 100)
 
-SELECT TeacherID, SUM (Grade) as totalGrades FROM Grade
+SELECT TeacherID, COUNT (Grade) as totalGrades FROM Grade
 WHERE StudentID < 100
 GROUP BY TeacherID
 
@@ -18,21 +18,21 @@ ORDER BY AVG(Grade) DESC
 
 --Calculate the count of all grades per Teacher in the system and filter only grade count greater then 200
 
-SELECT TeacherID, SUM(Grade) as totalGrades FROM Grade
+SELECT TeacherID, COUNT(Grade) as totalGrades FROM Grade
 GROUP BY TeacherID
-HAVING SUM(Grade) > 2000
+HAVING COUNT(Grade) > 200
 
 --Find the Grade Count, Maximal Grade, and the Average Grade per Student on all grades in the system. 
 --Filter only records where Maximal Grade is equal to Average Grade
 
-SELECT StudentID, Student.FirstName, SUM(Grade) AS gradeCount, MAX(Grade) as maxGrade, AVG(Grade) as avgGrade FROM Grade
+SELECT StudentID, Student.FirstName, COUNT(Grade) AS gradeCount, MAX(Grade) as maxGrade, AVG(Grade) as avgGrade FROM Grade
 JOIN Student on StudentID = Student.Id
 GROUP BY StudentID, Student.FirstName
 HAVING MAX(Grade) = AVG(Grade)
 
 --List Student First Name and Last Name next to the other details from previous query
 
-SELECT StudentID, Student.FirstName, Student.LastName, SUM(Grade) AS gradeCount, MAX(Grade) as maxGrade, AVG(Grade) as avgGrade FROM Grade
+SELECT StudentID, Student.FirstName, Student.LastName, COUNT(Grade) AS gradeCount, MAX(Grade) as maxGrade, AVG(Grade) as avgGrade FROM Grade
 JOIN Student on StudentID = Student.Id
 GROUP BY StudentID, Student.FirstName, Student.LastName
 HAVING MAX(Grade) = AVG(Grade)
@@ -41,7 +41,7 @@ HAVING MAX(Grade) = AVG(Grade)
 GO;
 CREATE VIEW vw_StudentGrades AS
 (
-	SELECT StudentID, SUM(Grade) as gradeCount FROM Grade
+	SELECT StudentID, COUNT(Grade) as gradeCount FROM Grade
 	GROUP BY StudentID
 );
 GO;
@@ -51,7 +51,7 @@ SELECT * FROM vw_StudentGrades
 GO;
 ALTER VIEW vw_StudentGrades AS
 (
-	SELECT Student.FirstName, Student.LastName, SUM(Grade) as gradeCount FROM [Grade]
+	SELECT Student.FirstName, Student.LastName, COUNT(Grade) as gradeCount FROM [Grade]
 	INNER JOIN Student on StudentID = Student.Id
 	GROUP BY Student.FirstName, Student.LastName
 );
@@ -65,7 +65,7 @@ ALTER VIEW vw_StudentGrades AS
 	SELECT TOP 1000 Student.FirstName, Student.LastName, SUM(Grade) as gradeCount FROM [Grade]
 	INNER JOIN Student on StudentID = Student.Id
 	GROUP BY Student.FirstName, Student.LastName
-	ORDER BY SUM(Grade) DESC
+	ORDER BY COUNT(Grade) DESC
 );
 GO;
 SELECT * FROM vw_StudentGrades
